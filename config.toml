@@ -25,10 +25,10 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   url = "/"
 
 [[menu.main]]
-  name = "Works"
+  name = "Tweets"
   weight = 20
   identifier = "works"
-  url = "https://github.com/laozhu"
+  url = "https://twitter.com/LikeAlwaysWrong"
 
 # Add your own params here
 [params]
