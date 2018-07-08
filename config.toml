@@ -36,7 +36,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   avatar = "/img/logo2.png"
   seotitle = "Alan's Analysis"
   subtitle = "Visualizing existence one graph at a time"
-  description = "Hugo is one of the most popular open-source static site generators. With its amazing speed and flexibility, Hugo makes building websites fun again."
+  description = "Topical humor with graphical output. Read something different."
   paginate = 10
 
   # Choose your social networks
