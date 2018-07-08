@@ -1,0 +1,148 @@
+---
+title: When Life's got you Blogdown
+author: Alan Carlson
+date: '2018-07-06'
+slug: when-life-s-got-you-blogdown
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(lubridate)
+library(reshape2)
+library(blogdown)
+library(htmltools)
+library(gridExtra)
+
+theme_set(theme_bw() + theme(text = element_text(size=12)))
+
+knit_hooks$set(htmlcap = function(before, options, envir) {
+  if(!before) {
+    paste('<p style="text-align:center "><i>',options$htmlcap,"</i></p>",sep="")
+    }
+    })
+```
+
+Somebody asked me how I made this website when I've made it clear to them in the past that I know nothing about website design. "Like anyone else!" I said. "By making a deal with an ethereal void-being who promised forbidden knowledge at little to no cost to me!"
+
+```{r,echo=FALSE,out.width='50%',htmlcap="HTML actually stands for 'Here take my life'",fig.align='center'}
+knitr::include_graphics("/post/2018-07-06-when-life-s-got-you-blogdown_files/portal.png")
+```
+
+In all seriousness, I got lucky with how this all worked out. I use a program called R extensively in the work I do, and wouldn't you know it? Someone already created a package (conveniently called blogdown) where you basically write some R code, preview the site on your computer, and publish it live for everyone to see. Now that all sounded simple 2 weeks ago when I started making this site. I was so young then. Full of hope. But no, this was an arduous and time consuming process that used alomst all of my free time and available stress emotions for the better part of these last 2 weeks. 
+
+Obviously it's working now, but I figure I should immerse you in my struggle.
+
+###Phase 1: YouTube & First Attempt
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3.5,fig.width=10}
+
+dt <- data.frame(date = seq.Date(as.Date('2018-06-22'),as.Date('2018-06-30'),'days'),
+                 hours = c(2,3,5,3.5,3,4,5,4,8),
+                 stress = c(1,3,4,5,6,6,7,9,10))
+
+dt <- dt %>%
+  mutate(chours = cumsum(hours))
+
+# dt$shours <- dt$chours - dt$hours
+
+# dt <- melt(dt,id="date")
+
+# dt$variable <- factor(dt$variable, levels = c("chours","shours","hours","stress"))
+
+# ggplot(dt %>% filter(variable != "stress" & variable != "chours"),
+#        aes(date,value,fill=variable)) +
+#   geom_col(color="white",size=.25,width=1) +
+grid.arrange(
+ggplot(dt) +
+  geom_col(aes(date,chours,fill='Total'),width=1,color="white",size=.25) +
+  geom_col(aes(date,hours,fill='Daily'),width=1,color="white",size=.25) +
+  geom_text(aes(date,chours,label=chours),vjust=-.35,fontface='bold') +
+  geom_text(aes(date,hours,label=hours),vjust=-.35,fontface='bold') +
+  scale_x_date(date_breaks = 'days',date_labels = "%b-%d") +
+  scale_y_continuous(limits = c(0,45),expand = c(0,0)) +
+  theme(panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = c(.85,1.05),
+        legend.background = element_rect(fill=NA),
+        legend.direction = 'horizontal') +
+  labs(x=NULL,y=NULL,
+       title="Initial Hours Devoted to Creating Site") +
+  scale_fill_manual('',labels=c("Daily","Total"),values=c("#003057","#A9A9A9")) +
+  guides(fill = guide_legend(reverse = TRUE))
+,
+ggplot(dt,aes(date,stress)) +
+  geom_step(color="#FF9E1B",size=1) +
+  geom_point(color="#FF9E1B",size = 2) +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        axis.ticks = element_blank()) +
+  scale_x_date(date_breaks = 'days',date_labels = "%b-%d") +
+  scale_y_continuous(breaks = seq(0,10,2),position = 'right') +
+  labs(x=NULL,y=NULL,
+       title="Stress Level of Initial Creation")
+,ncol=2
+,widths=c(1.25,1)
+)
+```
+
+I read a little bit about what blogdown does, how to interact with the basics, and watched a lengthy tutorial to get it started. As you can see, I dedicated most of my free time (I get 5 or 6 hours total per day after work) to get this working. But these hours did not create a working website. Every day was usually me starting over because I didn't know what wasn't working. It didn't help that R kind of needs you to start over each time with this kind of project.
+
+I'll draw your attention to the 8 hours put in on June 30th, which is when I recruited my Computer Science roommate, Jake, to help me. He couldn't figure it out either, and we tried to start an entirely different site through a different method. As my stress levels climbed with each failed attempt, I gave up for 3 days. It was frustrating putting in so many hours and show no progress towards a complete product. Every time I would try and compile everything and have the site run, nothing would render properly and I was at a loss for solutions. To add salt to the wound my computer fan would get louder with every iteration of the broken site -- mocking me with its digital equivalent of laughter.
+
+```{r,echo=FALSE,out.width='50%',htmlcap="Don't let its blank screen fool you, it has such a smug look",fig.align='center'}
+knitr::include_graphics("/post/2018-07-06-when-life-s-got-you-blogdown_files/computer.jpeg")
+```
+
+###Phase 2: More YouTube & First Success
+The suspense of me giving up means nothing since you're currently reading this, so I'll tell you how I got it to work. That answer? I have absolutely *no fucking idea.* Honestly, all I did was watch a different but equally as long YouTube video, try all of its nonsense, added some test content, and clicked the "go live" button once again. And to my surprise, it actually worked! Posts were being rendered, logos were being updated, default content examples were being properly deleted, I had done it!
+
+```{r,echo=FALSE,out.width='50%',htmlcap="\\*computer fan stops abruptly\\*",fig.align='center'}
+knitr::include_graphics("/post/2018-07-06-when-life-s-got-you-blogdown_files/computer.jpeg")
+```
+
+But this wasn't the end. I had gotten the base of it started, sure, but I still had to edit the finer points of the site itself, which involved delving into the depths of the HTML code.
+
+###Phase 3: Formatting Frustrations
+Searching for specific items in HTML isn't fantastically easy with this method; I had to go on a scavenger hunt through the many files (which you can peruse in my github link in the side bar) that colors, rotations, and icons *could* be in without actually knowing where to start. I was able to get most things sorted after a while, but the icons would prove difficult.
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3.5}
+
+dt <- data.frame(date = seq.Date(as.Date('2018-07-01'),as.Date('2018-07-07'),'days'),
+                 hours = c(5,2,3,3.5,4,7,3))
+
+dt <- dt %>%
+  mutate(chours = cumsum(hours))
+
+ggplot(dt) +
+  geom_col(aes(date,chours,fill='Total'),width=1,color="white",size=.25) +
+  geom_col(aes(date,hours,fill='Daily'),width=1,color="white",size=.25) +
+  geom_text(aes(date,chours,label=chours),vjust=-.35,fontface='bold') +
+  geom_text(aes(date,hours,label=hours),vjust=-.35,fontface='bold') +
+  scale_x_date(date_breaks = 'days',date_labels = "%b-%d") +
+  scale_y_continuous(limits = c(0,45),expand = c(0,0)) +
+  theme(panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        legend.position = c(.85,1.075),
+        legend.background = element_rect(fill=NA),
+        legend.direction = 'horizontal',
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank()) +
+  labs(x=NULL,y=NULL,
+       title="Hours Devoted to Formatting Site") +
+  scale_fill_manual('',labels=c("Daily","Total"),values=c("#003057","#A9A9A9")) +
+  guides(fill = guide_legend(reverse = TRUE))
+```
+
+Again, the spike in hours is me using Jake's help. All I wanted to do was change the favicon, which is the little logo that appears in a tab in your browser or on your phone. At first, it would just change it back to the default whenever I tried to run the site. Frustrating. Then I fixed that but it wouldn't recognize the change. Extra frustrating. Then I tried something (again, no idea what I did differently) and it worked. I shouted with joy as I had finally beat my Goliath with a sling full of code.. until I refreshed the page and it didn't actually work.
+
+```{r,echo=FALSE,out.width='50%',htmlcap="I shouted louder when I realized I was the silver piece in the end",fig.align='center'}
+knitr::include_graphics("/post/2018-07-06-when-life-s-got-you-blogdown_files/chess.jpeg")
+```
+
+Hours were spent trying to edit this one icon to work. Seemingly defeated by a group of 256 pixels, Jake ended my suffering and pointed out it was my browser not being refreshed, not any of my actual code. I cleared my browser cache, and boom. Working icons.
+
+And that was it! I'll be honest, it was a great feeling to actually have it all work. No compromises or settling for a subpar solution. I did it. Something actually worked out in my favor for the first time in 4 months. I teared up. I had my first post done, started working on this one, and will continue to write others. So just remember, when life's got you blogdown, enough bullshit will get *something* to work properly.
