@@ -1,0 +1,221 @@
+---
+title: Relationshipping & Handling
+author: Alan Carlson
+date: '2018-07-08'
+slug: relationshipping-handling
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(lubridate)
+library(reshape2)
+library(blogdown)
+library(htmltools)
+library(gridExtra)
+library(plotly)
+
+theme_set(theme_bw() + theme(text = element_text(size=12)))
+
+knit_hooks$set(htmlcap = function(before, options, envir) {
+  if(!before) {
+    paste('<p style="text-align:center "><i>',options$htmlcap,"</i></p>",sep="")
+    }
+    })
+```
+
+In my [first post](https://alans-analysis.netlify.com/post/the-graph-seen-round-my-graduating-class/), I showed how many of my high school classmates are now engaged, married, or have a kid. And in light of some recent events, I thought I might as well dive into my own relationship history to see if there is anything to see from an analytical perspective.
+
+It all started my Senior year of High School, when I tailored my appearance enough to become what I call "dateable from a looks perspective". Shallow as that might be, most people will agree that you need to have some semblance of physical attractiveness to receive interest. The good news is that it varies between person to person, so *someone* probably will find you attractive at some point if you have taken basic steps to look presentable. So I dressed myself up a bit, because up until then I looked like someone took a high school biology skeleton, threw some skin on it, gave it Bieber hair, and called it a day.
+
+```{r,echo=FALSE,out.width='50%',htmlcap="Which I find offensive, because I came from a Pre-Med anatomy lab",fig.align='center'}
+knitr::include_graphics("/post/2018-07-08-relationshipping-handling_files/hospital.jpeg")
+```
+
+With all of my efforts over the years, I'm still a niche interest for most women. Saying "women only like muscle bound gym buffs" is wholly untrue and stupid, and the opposite of "women don't like stick men that look like they just came out of an Apple ad" is equally false. On average, women are attracted to average guys, which makes the whole "too ripped" or "too skinny" is a double edged sword. Actually, it's more of a familiar double-edged graph:
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3}
+
+normal_prob_area_plot <- function(lb, ub, mean = 0, sd = 1, limits = c(mean - 3 * sd, mean + 3 * sd)) {
+    x <- seq(limits[1], limits[2], length.out = 100)
+    xmin <- max(lb, limits[1])
+    xmax <- min(ub, limits[2])
+    areax <- seq(xmin, xmax, length.out = 100)
+    area <- data.frame(x = areax, ymin = 0, ymax = dnorm(areax, mean = mean, sd = sd))
+    (ggplot()
+     + geom_line(data.frame(x = x, y = dnorm(x, mean = mean, sd = sd)),
+                 mapping = aes(x = x, y = y),color="#003057",size=1)
+     + geom_ribbon(data = area, mapping = aes(x = x, ymin = ymin, ymax = ymax),fill="#003057",alpha=.5)
+     + scale_x_continuous(limits = limits))
+}
+
+normal_prob_area_plot(lb=-Inf,ub=Inf) +
+  scale_y_continuous(expand = c(0,0),limits = c(0,.5)) +
+  theme(panel.grid = element_blank()) +
+  theme_void() +
+  geom_vline(xintercept = c(-2,2),linetype = 2, color = "#696969",size=1) +
+  labs(title="Standard Normal Curve of Attraction of Men") +
+  annotate("text",-2.25,.25,label="Stick Figure",angle=90) +
+  annotate("text",2.25,.25,label="Ripped Beyond Recognition",angle=90)
+
+
+```
+
+In other words, the women who *do* like either end of the spectrum are not in the majority. The good news is that scientifically proven physical traits can appear in anyone, so you're not limited to the above areas.
+
+```{r,echo=FALSE,out.width='40%',htmlcap="Good news indeed",fig.align='center'}
+knitr::include_graphics("/post/2018-07-08-relationshipping-handling_files/me.jpg")
+```
+
+My original point is that I've never been a guy that's received much attention from women. The only time I turn heads is when they look to see if I'm their other friend walking in. Before I continue, I'd like to take a step back and clarify this is not a "woe is me" or "women are evil" or other derogatory slight against women post. If anything I recognize that I'm the core issue, not any of the women I've had the pleasure of dating. And since that's what this post is really about, let's get into it!
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3}
+
+dt <- data.frame(n = seq(1,6,1),
+                 intensity = c(3,1,2,4,3,5),
+                 type = c(rep("Fling",3),rep("Serious",3)))
+
+ggplot(dt,aes(n,intensity,color=type,size=intensity)) +
+  geom_point() +
+  theme(panel.grid = element_blank(),
+        legend.position = c(.85,1.075),
+        legend.direction = 'horizontal',
+        legend.background = element_rect(fill=NA)) +
+  scale_x_continuous(breaks = seq(1,6,1),limits = c(0,7)) +
+  scale_y_continuous(breaks = seq(1,5,1),limits = c(0,6)) +
+  scale_size_area(max_size = 10, guide= FALSE) +
+  scale_color_manual("",values = c("#FF9E1B","#003057")) +
+  labs(x=NULL,y="Intensity",color="Type",
+       title="Relationships by Intensity & Type",
+       subtitle="(Chronological Order)") +
+  guides(color=guide_legend(override.aes = list(shape=16,size=3)))
+
+
+```
+
+I'd like to clarify that **Fling** is being used here in the lightest sense of the word -- a few dates and kisses tops. I just had to delineate between unofficial/official relationships somehow. Out of the 6 relationships I've been in, they've all had varying depths and emotions to them.
+
+Obviously your first relationship is always your *first relationship*, which is why it's higher up despite being the oldest. Then I had a couple of short interactions with two others, and then I had my first official, serious relationship. After that ended, there was a rebound that really was just me coming to terms with being out of a relationship, which inflated the intensity during the relationship, but nonetheless gets a 3.
+
+My most recent relationship caps out the graph in every sense of the word. Uplifting, happy, exceeding expectations, so many words I could describe it with. I never imagined relationships could be that half that good, and this reinvented my definition of what it means to be with someone.
+
+But like all good things, they ended. All but 1 did the ending. And while the reasons for their ends were all different and valid, it never got easier:
+
+```{r,echo=FALSE,out.width='50%',htmlcap="5 out of 6 women agree: it's over",fig.align='center'}
+knitr::include_graphics("/post/2018-07-08-relationshipping-handling_files/cloud.png")
+```
+
+They're all colored by what type they were from the first graph, with the line in grey being what I said when I ended the rebound relationship. Despite the whole "let's stay friends" mentality they all had, I only interact with 1 of them on a semi-regular twitter basis. In the end, I hold no ill will to any of them, and it's oddly cathartic to go through it all, honestly.
+
+If you've been keeping track at home, you'll notice that 6 relationships over 6 years is a simple average of 1 per year. But like most real-life math, it never is that simple.
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3}
+
+dt <- data.frame(date = seq.Date(as.Date('2012-06-30'),as.Date('2018-06-30'),'days'))
+
+dt$type <- ifelse(dt$date >= '2012-11-13' & dt$date <= '2013-02-11' | 
+                      dt$date >= '2013-05-07' & dt$date <= '2013-05-10' |
+                      dt$date >= '2013-11-19' & dt$date <= '2013-12-09', "Fling",
+                    ifelse(dt$date >= '2014-09-12' & dt$date <= '2017-06-08' |
+                             dt$date >= '2017-06-24' & dt$date <= '2017-09-24' |
+                             dt$date >= '2017-11-02' & dt$date <= '2018-04-23',"Serious","Single"))
+
+dt$status <- ifelse(dt$date >= '2012-11-13' & dt$date <= '2013-02-11' | 
+                      dt$date >= '2013-05-07' & dt$date <= '2013-05-10' |
+                      dt$date >= '2013-11-19' & dt$date <= '2013-12-09', "Relationship",
+                    ifelse(dt$date >= '2014-09-12' & dt$date <= '2017-06-08' |
+                             dt$date >= '2017-06-24' & dt$date <= '2017-09-24' |
+                             dt$date >= '2017-11-02' & dt$date <= '2018-04-23',"Relationship","Single"))
+
+dt$status <- factor(dt$status)
+
+ggplot(dt,aes(date,status)) +
+    geom_rect(inherit.aes = FALSE,
+              aes(xmin=as.Date('2012-06-30'),
+                xmax=as.Date('2013-05-08'),
+                ymin=-Inf,
+                ymax=Inf),
+              fill='#EFEFEF') +
+    geom_rect(inherit.aes = FALSE,
+              aes(xmin=as.Date('2013-08-24'),
+                xmax=as.Date('2017-05-06'),
+                ymin=-Inf,
+                ymax=Inf),
+              fill='#EFEFEF') +
+    geom_rect(inherit.aes = FALSE,
+              aes(xmin=as.Date('2017-08-22'),
+                xmax=as.Date('2018-05-03'),
+                ymin=-Inf,
+                ymax=Inf),
+              fill='#EFEFEF') +
+  geom_point(aes(color=type),shape = 124) +
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle = 90,vjust=.5),
+        axis.text.y = element_text(angle=90,hjust=.5),
+        legend.position = c(.8,1.065),
+        legend.direction = 'horizontal',
+        legend.background = element_rect(fill=NA)) +
+  scale_x_date(date_breaks = "6 months",date_labels = "%Y-%m",
+               limits = c(min(dt$date),max(dt$date)),expand = c(0,0)) +
+  scale_y_discrete(limits=rev(levels(dt$status))) +
+  labs(x=NULL,y=NULL,title="Lengths of Relationship Statuses") +
+  scale_color_manual("",values=c("#FF9E1B","#003057","#A9A9A9")) +
+  guides(color=guide_legend(override.aes = list(shape=15,size=3))) +
+  annotate("text",x=as.Date("2012-11-30"),y=2.5,label="High School") +
+  annotate("text",x=as.Date("2015-06-30"),y=2.5,label="Undergrad") +
+  annotate("text",x=as.Date("2017-12-30"),y=2.5,label="Grad School")
+
+
+```
+
+The graphs kicks off just before Senior year started, and my first fling shortly after. The smallest orange blip after that is a 3 day total pursuit of a different woman right when I graduated (anecdotally, 3 days is the optimum for as little pain as possible when it doesn't work out). A brief interest from another woman my first semester in college happened, and then a long while of being single until I met my first girlfriend.
+
+This one lasted a long time, 2.75 years. We broke up on our 1,001st day together. Technically, we broke many times during that span, but only for a day at a time. That one was a combination of immaturity and not wanting to be alone on both parties, which led to an artificial length of time together.
+
+Not even 3 weeks later, I was in another relationship, which I recognize is shitty of me. I wasted that woman's time and emotions and I regret hurting her when I realized I had to end it. I really regret ending it on our 3 month anniversary too, which was extra shitty of me, but not planned specifically in what little defense I can gather for myself.
+
+And then the 6 months of bliss as I met one of the most fun, inspirational, and beautiful women I had ever met. It was uncanny how easy it was to connect with her -- our backgrounds, interests, majors, aesthetics, tastes, and desires all overlapped, but not so much that it was ever weird or felt fake. And then I hit a major snag in my ability to be happy, and it all came crashing down as I struggled with the ever looming specter of adulthood, questioning life choices, and never feeling good enough to be hers.
+
+She tried her best to console me, and sacrificed a lot to try and salvage it, but in the end I did what I do best: nothing. And for once I was the bad guy. It wasn't "growing apart" or "doesn't feel right", it was me being incapable of contributing to a relationship, and I dragged her down with me. She said it was timing, but I knew better; it was really just time for her to leave to live a happier life.
+
+```{r,echo=FALSE,out.width='50%',htmlcap="Just like how it's time to stop being so depressing",fig.align='center'}
+knitr::include_graphics("/post/2018-07-08-relationshipping-handling_files/time.jpeg")
+```
+
+And after that ended, I've taken a look at my past relations and found something interesting:
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=6}
+
+dt <- data.frame(n=seq(1,6,1),
+                 l=c(91,3,21,1001,93,173),
+                 label=c("3 Months","3 Days","3 Weeks","2.75 Years","3 Months","6 Months"),
+                 stringsAsFactors = FALSE)
+grid.arrange(
+ggplot(dt,aes(n,l)) +
+  geom_point(color="#003057") +
+  geom_smooth(method='lm',se=FALSE,color="#FF9E1B",linetype=3) +
+  geom_text(aes(label=label),vjust=-.75) +
+  scale_x_continuous(breaks = seq(1,6,1),limits = c(.5,6.5)) +
+  scale_y_continuous(breaks = seq(0,1200,200),limits = c(0,1100)) +
+  theme(panel.grid = element_blank()) +
+  labs(x=NULL,y="Days",title="Length of Relationships")
+,
+ggplot(dt %>% filter(n != 4),aes(n,l)) +
+  geom_point(color="#003057") +
+  geom_smooth(method='lm',se=FALSE,color="#FF9E1B",linetype=3) +
+  geom_point(data=dt %>% filter(n == 4),
+             aes(n,l),color="#696969",shape = 120,size=3) +
+  geom_text(data= dt, aes(n,l,label=label),vjust=-.75,fontface='bold') +
+  scale_x_continuous(breaks = seq(1,6,1),limits = c(.5,6.5)) +
+  scale_y_continuous(breaks = seq(0,1200,200),limits = c(0,1100)) +
+  theme(panel.grid = element_blank())+
+  labs(x=NULL,y="Days",title="Removing Outlier")
+,nrow=2)
+```
+
+Do you see it? An initial trend line shows a little hope that I've been slowly improving, but if you take out the outlier of the long relationship (which artificially lasted a long time, if you remember), the trend line halves in its slope. Basically this means that something is up on my end or I would have a steeper line. In other words, I haven't learned much from my past, and need to seriously evaluate myself before I go about wasting another woman's time.
+
+And sure this may sound pretty bleak from my perspective, but the data doesn't lie. I'm not expecting to get married as soon as possible or find someone tomorrow, but the point is that I'm not as dateable as I thought, and without some improvement on my end, it's not going to get much better in the future. But that's a [different post](https://alans-analysis.netlify.com/) to look at.
