@@ -1,0 +1,380 @@
+---
+title: 1,000 Miles in my Shoes
+author: Alan Carlson
+date: '2018-07-14'
+slug: 1-000-miles-in-my-shoes
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(lubridate)
+library(reshape2)
+library(blogdown)
+library(htmltools)
+library(gridExtra)
+library(plotly)
+library(png)
+
+theme_set(theme_bw() + theme(text = element_text(size=12)))
+
+knit_hooks$set(htmlcap = function(before, options, envir) {
+  if(!before) {
+    paste('<p style="text-align:center "><i>',options$htmlcap,"</i></p>",sep="")
+    }
+    })
+```
+
+Every day I begrudgingly get out of bed, shower, put on some clothes (ideally), and go out the door to face the day's challenges. But no matter what life throws at me, I'll always know just how far I walked in a day, thanks to my phone's pedometer! Since I got it in October 2016, my phone has dutifully kept track of just how many steps I've taken. For better or worse, it only tracks steps I've physically taken, and not any improvements or regressions in my personality.
+
+```{r,echo=FALSE,out.width='50%',htmlcap="Otherwise there'd be a substantial negative number",fig.align='center'}
+knitr::include_graphics("/post/2018-07-14-1-000-miles-in-my-shoes_files/phone.jpg")
+```
+
+I wondered whether or not you could actually tell anything about my life from my steps over the almost 2 years it's been recorded. See for yourself:
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3,fig.width=10}
+
+dt <- read.csv("C:/Users/Alan/OneDrive/Documents/OneDrive/steps.csv",stringsAsFactors = FALSE)
+
+names(dt) <- c("date","steps","week","month","day","m_name","year","label")
+
+dt$date <- as.Date(dt$date)
+
+ggplot(dt,aes(date,steps/2000)) +
+  geom_line(color="#003057") +
+  scale_x_date(date_breaks = "2 months",
+               date_labels = "%b-%y",
+               expand = c(0,0)) +
+  scale_y_continuous(breaks = seq(0,10,2),
+                     expand = c(0,0),
+                     limits = c(0,10)) +
+  theme(panel.grid = element_blank()) +
+  labs(x = NULL,
+       y = NULL,
+       title = "Miles Walked/Day over Time")
+  
+```
+
+Wow, that's.. uh.. gosh, what a letdown. Sure there are a few spikes here and there, but what does any of it mean? I walked almost 10 miles in one day? That doesn't sound like me at all! Luckily, I've broken it down for you.
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3,fig.width=10}
+
+dt <- read.csv("C:/Users/Alan/OneDrive/Documents/OneDrive/steps.csv",stringsAsFactors = FALSE)
+
+names(dt) <- c("date","steps","week","month","day","m_name","year","label")
+
+dt$date <- as.Date(dt$date)
+dt$week <- as.Date(dt$week)
+dt$month <- as.Date(dt$month)
+
+dt <- dt %>%
+  group_by(month) %>%
+  summarise(steps = sum(steps)) %>%
+  filter(month >= "2016-11-01" & month < "2018-07-01")
+
+ggplot(dt,aes(month,steps/2000)) +
+  geom_rect(inherit.aes = FALSE,
+              aes(xmin=as.Date(min(month)),
+                xmax=as.Date('2017-05-06'),
+                ymin=-Inf,
+                ymax=Inf),
+              fill='#EFEFEF') +
+  geom_rect(inherit.aes = FALSE,
+              aes(xmin=as.Date('2017-08-22'),
+                xmax=as.Date('2018-05-03'),
+                ymin=-Inf,
+                ymax=Inf),
+              fill='#EFEFEF') +
+  geom_line(color="#A9A9A9") +
+  geom_point(color="#003057") +
+  scale_x_date(date_breaks = "3 months",
+               date_labels = "%b-%y",
+               expand = c(0,0)) +
+  scale_y_continuous(limits = c(0,150),
+                     breaks = seq(0,150,30),
+                     expand = c(0,0)) +
+  theme(panel.grid = element_blank()) +
+  labs(x = NULL,
+       y = NULL,
+       title = "Miles Walked/Month over Time") +
+  annotate("text",
+           x=as.Date("2016-12-20"),
+           y=130,
+           label="Undergrad") +
+    annotate("text",
+           x=as.Date("2017-11-01"),
+           y=130,
+           label="Grad School")
+  
+  
+```
+
+So this groups it at the monthly level and labels when I was in school. There's a little decrease in the first Summer out of school, with a steady increase until April and then it drops all over again. The general increase during grad school makes sense since I lived on campus, walked everywhere, and didn't need to drive often compared to my undergrad, where I lived off campus. But that doesn't explain a steady increase; it's not like I suddenly had more classes to walk to, or the campus got bigger, so what's really going on?
+
+```{r,echo=FALSE,out.width='25%',htmlcap="How deep does it go??",fig.align='center'}
+knitr::include_graphics("/post/2018-07-14-1-000-miles-in-my-shoes_files/deep.jpeg")
+```
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3,fig.width=10}
+
+dt <- read.csv("C:/Users/Alan/OneDrive/Documents/OneDrive/steps.csv",stringsAsFactors = FALSE)
+
+names(dt) <- c("date","steps","week","month","day","m_name","year","label")
+
+dt$date <- as.Date(dt$date)
+dt$week <- as.Date(dt$week)
+dt$month <- as.Date(dt$month)
+
+
+dt <- dt %>%
+  group_by(week) %>%
+  summarise(steps = sum(steps)) %>%
+  filter(week >= "2016-11-01" & week < "2018-07-01")
+
+ggplot(dt,aes(week,steps/2000)) +
+  geom_rect(inherit.aes = FALSE,
+              aes(xmin=as.Date(min(week)),
+                xmax=as.Date('2017-05-06'),
+                ymin=-Inf,
+                ymax=Inf),
+              fill='#EFEFEF') +
+  geom_rect(inherit.aes = FALSE,
+              aes(xmin=as.Date('2017-08-22'),
+                xmax=as.Date('2018-05-03'),
+                ymin=-Inf,
+                ymax=Inf),
+              fill='#EFEFEF') +
+  geom_line(color="#A9A9A9") +
+  geom_point(color="#003057") +
+  scale_x_date(date_breaks = "2 months",
+               date_labels = "%b-%y",
+               expand = c(0,0)) +
+  scale_y_continuous(limits = c(0,40),
+                     expand = c(0,0)) +
+  theme(panel.grid = element_blank()) +
+  labs(x = NULL,
+       y = NULL,
+       title = "Miles Walked/Week over Time") +
+  annotate("text",
+           x=as.Date("2016-12-20"),
+           y=35,
+           label="Undergrad") +
+    annotate("text",
+           x=as.Date("2017-11-01"),
+           y=35,
+           label="Grad School")
+  
+  
+```
+
+
+Moving to weekly data, you can see more variability, which shows how outliers can impact data interpretation. I didn't walk much more overall in January, I just walked *a shit ton* during one week. This repeats for March and April as well.
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3,fig.width=10}
+
+dt <- read.csv("C:/Users/Alan/OneDrive/Documents/OneDrive/steps.csv",stringsAsFactors = FALSE)
+
+names(dt) <- c("date","steps","week","month","day","m_name","year")
+
+dt$date <- as.Date(dt$date)
+
+ggplot(dt,aes(date,steps/2000)) +
+    geom_rect(inherit.aes = FALSE,
+              aes(xmin=as.Date(min(date)),
+                xmax=as.Date('2017-05-06'),
+                ymin=-Inf,
+                ymax=Inf),
+              fill='#EFEFEF') +
+    geom_rect(inherit.aes = FALSE,
+              aes(xmin=as.Date('2017-08-22'),
+                xmax=as.Date('2018-05-03'),
+                ymin=-Inf,
+                ymax=Inf),
+              fill='#EFEFEF') +
+  geom_line(color="#003057") +
+  scale_x_date(date_breaks = "2 months",
+               date_labels = "%b-%y",
+               expand = c(0,0)) +
+  scale_y_continuous(breaks = seq(0,10,2),
+                     expand = c(0,0),
+                     limits = c(0,10)) +
+  theme(panel.grid = element_blank()) +
+  labs(x = NULL,
+       y = NULL,
+       title = "Miles Walked/Day over Time") +
+  annotate("text",
+           x=as.Date("2016-12-20"),
+           y=9,
+           label="Undergrad") +
+    annotate("text",
+           x=as.Date("2017-11-01"),
+           y=9,
+           label="Grad School")
+  
+  
+```
+
+Now this is the same chart from the beginning with school labelled. Turns out, I was *really* into walking on some days, but aside from mid-March to mid-April, all of those days were isolated incidents. What were they you ask?
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3,fig.width=10}
+
+dt <- read.csv("C:/Users/Alan/OneDrive/Documents/OneDrive/steps.csv",stringsAsFactors = FALSE)
+
+names(dt) <- c("date","steps","week","month","day","m_name","year","label")
+
+dt$date <- as.Date(dt$date)
+
+label <- dt %>%
+  filter(steps/2000 >= 4)
+
+pkmn <- readPNG("C:/Users/Alan/Desktop/pokemonpin.png")
+move <- readPNG("C:/Users/Alan/Desktop/movingtruckpin.png")
+
+ggplot() +
+  geom_rect(inherit.aes = FALSE,
+            aes(xmin=as.Date(min(dt$date)),
+            xmax=as.Date('2017-05-06'),
+            ymin=-Inf,
+            ymax=Inf),
+            fill='#EFEFEF') +
+  geom_rect(inherit.aes = FALSE,
+            aes(xmin=as.Date('2017-08-22'),
+            xmax=as.Date('2018-05-03'),
+            ymin=-Inf,
+            ymax=Inf),
+            fill='#EFEFEF') +
+    geom_rect(inherit.aes = FALSE,
+            aes(xmin=as.Date('2018-03-18'),
+            xmax=as.Date('2018-03-25'),
+            ymin=-Inf,
+            ymax=Inf),
+            fill='#3FAAFA',
+            alpha=.2) +
+    geom_rect(inherit.aes = FALSE,
+            aes(xmin=as.Date('2018-03-29'),
+            xmax=as.Date('2018-04-15'),
+            ymin=-Inf,
+            ymax=Inf),
+            fill='#3FAAFA',
+            alpha=.4) +
+  geom_line(data=dt,aes(date,steps/2000),color="#A9A9A9") +
+  geom_point(data=dt %>% filter(steps >= 8000),
+             aes(date,steps/2000),
+             color="#003057") +
+  geom_text(data=dt,aes(date,steps/2000,label=label),
+            color="#003057",
+            fontface="bold",
+            vjust=-1) +
+  scale_x_date(date_breaks = "2 months",
+               date_labels = "%b-%y",
+               expand = c(0,0)) +
+  scale_y_continuous(breaks = seq(0,10,2),
+                     expand = c(0,0),
+                     limits = c(0,10)) +
+  coord_cartesian(ylim = c(4,10)) +
+  theme(panel.grid = element_blank()) +
+  labs(x = NULL,
+       y = NULL,
+       title = "Miles Walked/Day over Time") +
+  annotation_raster(pkmn,
+                    xmin=as.Date("2018-05-04"),
+                    xmax = as.Date("2018-06-03"),
+                    ymin = 5.25,
+                    ymax = 6.25) +
+  annotation_raster(pkmn,
+                    xmin=as.Date("2018-06-23"),
+                    xmax = as.Date("2018-07-23"),
+                    ymin = 5.75,
+                    ymax = 6.75) +
+  annotation_raster(pkmn,
+                    xmin=as.Date("2018-03-31"),
+                    xmax = as.Date("2018-04-30"),
+                    ymin = 6.75,
+                    ymax = 7.75) +
+  annotation_raster(move,
+                    xmin=as.Date("2017-04-22"),
+                    xmax = as.Date("2017-05-22"),
+                    ymin = 5.5,
+                    ymax = 6.5) +
+  annotation_raster(move,
+                    xmin=as.Date("2017-08-03"),
+                    xmax = as.Date("2017-09-02"),
+                    ymin = 5.75,
+                    ymax = 6.75) +
+  annotation_raster(move,
+                    xmin=as.Date("2018-04-18"),
+                    xmax = as.Date("2018-05-18"),
+                    ymin = 6.5,
+                    ymax = 7.5)
+  
+  
+```
+
+So I've highlighted the days where I've walked over 4 miles, and I can explain most of the spikes:
+
+* February 2017 - Honestly no clue. I even checked my Google location history (which is hilariously scary how accurate and detailed it can be) and found nothing noteworthy.
+* Orange truck icons - Days I moved, which involve a lot of walking around to pack, drive, unpack, etc.
+* Pokeballs - special "Pokemon Go Community Days" where I walk a lot in the span of 3 hours to catch fake, digital animals. Ladies.
+* Walk in the Park - Went on a first date with a woman where we walked for a length of time in a park. You couldn't stop walking really; it was *just* cold enough to chill you if you stopped moving.
+* LA Getaway - Same woman and I flew to LA for a weekend to see a concert. Walked pretty much all day from the airport to the hotel, to a dispensary (it's legal there, calm down), the beach, the concert itself, etc. Looking back, it doesn't feel like I walked that much that day, but that could be because there were adequate resting points or that I was baked for half the day. Who knows?
+* Card Adventure - Went halfway across SLC twice to get an exclusive Magic card as a birthday present for my roommate because I failed to check if the present was in stock literally everywhere I went besides the final store.
+
+You might also be wondering about the new, blue areas. The first, lighter one represents Spring Break, where 9 of us went to California & Vegas and pretty much walked everywhere there too. The darker area is where I started a health kick of trying to walk more every day because I'm trying to stave off the eventual catch up of my poor lifestyle habits as long as possible.
+
+```{r,echo=FALSE,out.width='50%',htmlcap="Why run when you can just walk away from your problems?",fig.align='center'}
+knitr::include_graphics("/post/2018-07-14-1-000-miles-in-my-shoes_files/walk.jpeg")
+```
+
+Other days that I walked a lot were either a date night of some kind or an outing with my roommates. On the flip side, there are a few almost zero days in June from when I didn't leave my bed for days at a time, but those aren't particularly interesting.
+
+Now that we know how far I've walked in general, how far have I walked in total in almost two years? Go ahead, take a guess!
+
+```{r,echo=FALSE,out.width='50%',htmlcap="Take your time. I'll wait",fig.align='center'}
+knitr::include_graphics("/post/2018-07-14-1-000-miles-in-my-shoes_files/wait.jpg")
+```
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE,fig.height=3,fig.width=6}
+
+dt <- read.csv("C:/Users/Alan/OneDrive/Documents/OneDrive/steps.csv",stringsAsFactors = FALSE)
+
+names(dt) <- c("date","steps","week","month","day","m_name","year","label")
+
+dt$date <- as.Date(dt$date)
+dt$week <- as.Date(dt$week)
+dt$month <- as.Date(dt$month)
+
+plot <- data.frame(x=c(0,1),
+                   y=c(0,1),
+                   stringsAsFactors = FALSE)
+
+madg <- readPNG("C:/Users/Alan/Desktop/madg.png")
+madg2 <- readPNG("C:/Users/Alan/Desktop/madg2.png")
+
+grid.arrange(
+ggplot(dt,aes(sum(dt$steps/2000),1)) +
+  geom_point(aes(size=sum(dt$steps/2000)),color="#FF9E1B",shape=21,fill="#003057",stroke=5) +
+  geom_text(aes(label=scales::comma(round(sum(dt$steps/2000),0))),size=14,color="white",fontface="bold") +
+  geom_text(aes(label="Miles"),vjust=6.25,size=8,fontface="bold") +
+  scale_size_area(max_size = 70,guide = 'none') +
+  theme_void()
+,
+ggplot(plot) +
+  geom_point(aes(x,y),color=NA) +
+  annotation_raster(madg2,
+                    xmin = 0.05,
+                    ymin = 0.03,
+                    xmax = .95,
+                    ymax = .96) +
+  theme_void() +
+  annotate("text",x=.67,y=.4,label="1.12\nMadagascars",fontface='bold')
+,ncol = 2 ) 
+
+```
+
+Well if you guessed just over 1,000 miles, you're either some kind of soothsaying demon or looked ahead. But yes, I've walked just over 1.12 Madagascars in almost two years, which is the most useless comparison I could make while making it look like I put some effort in making it. For a more concrete example, it's about the distance from Denver to San Francisco.
+
+Overall, it'd be interesting to see this over a longer time horizon, but I have no way of getting older data obviously. This data was tough enough; I had to manually type in every day's total from my phone because *a certain phone company that's totally not called LG* does not have an option to download it. And although my numbers are dwindling a bit since I don't the opportunity to walk as much anymore, I have a standing desk at work now, so that almost makes up for it. Almost.
