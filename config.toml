@@ -9,7 +9,7 @@ canonifyurls = true
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 # Disqus Username
-# disqusShortname = "disqus_shortname"
+disqusShortname = "https-alans-analysis-netlify-com"
 
 # Google Analytics UA number
 # googleAnalytics = "UA-XXXXXXXX-X"
