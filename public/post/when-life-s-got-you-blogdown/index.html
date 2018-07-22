@@ -112,6 +112,8 @@ HTML actually stands for ‘Here take my life’In all seriousness, I got lucky
       <a title="Go to top" class="to-top is-hide"><span class="icon icon-up"></span></a>
       
         
+        <a title="Go to comments" class="to-comment" href="#disqus_thread"><span class="icon icon-comment"></span></a>
+        
       
     </div>
     
@@ -265,6 +267,20 @@ HTML actually stands for ‘Here take my life’In all seriousness, I got lucky
 <p>And that was it! I’ll be honest, it was a great feeling to actually have it all work. No compromises or settling for a subpar solution. I did it. Something actually worked out in my favor for the first time in 4 months. I teared up. I had my first post done, started working on this one, and will continue to write others. So just remember, when life’s got you blogdown, enough bullshit will get <em>something</em> to work properly.</p>
 </div>
 </article>
+    
+    <div class="article-container">
+      <div id="disqus_thread"></div>
+<script>
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://https-alans-analysis-netlify-com.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+   
     <footer class="post-footer">
       
       <ul class="post-tags">
@@ -276,6 +292,26 @@ HTML actually stands for ‘Here take my life’In all seriousness, I got lucky
       </p>
     </footer>
     
+      <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-alans-analysis-netlify-com" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       
     
   </section>

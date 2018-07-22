@@ -1,4 +1,4 @@
-baseURL = "http://localhost:1313"
+baseURL = "https://alans-analysis.netlify.com/"
 languageCode = "en"
 title = "Alan's Analysis"
 theme = "hugo-nuo"
