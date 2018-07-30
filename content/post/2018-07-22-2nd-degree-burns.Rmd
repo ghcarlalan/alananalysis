@@ -479,7 +479,7 @@ In contrast, my last semester was tying up loose ends to graduate, which explain
 And that wraps up my bachelor's degree. You'll notice there's actually not a ton of finance classes, which is why I wanted to get my Master's in the first place. Nonetheless, I absolutely enjoyed my time at ISU, and was honored beyond belief when I was named ["Outstanding Student in Finance"](https://www.youtube.com/watch?v=Fzgll650eVo&t=18s) for my graduating class.
 
 **Semester Nine**
-```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.align="center"}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.align="center",out.width="100%",out.extra = 'style="display:block; margin:auto;"'}
 plot <- dt %>%
   filter(semester %in% c("One","Two","Three","Four","Five","Six","Seven","Eight","Nine")) %>%
   select(label,size)
@@ -568,7 +568,7 @@ knitr::include_graphics("/post/2018-07-22-2nd-degree-burns_files/me.jpg")
 These classes introduced me to R, and without that I wouldn't be sharing this with you now.
 
 **Semester Ten**
-```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.align="center"}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.align="center",out.width="100%",out.extra = 'style="display:block; margin:auto;"'}
 plot <- dt %>%
   select(label,size)
 
