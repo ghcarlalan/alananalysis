@@ -66,7 +66,7 @@ knitr::include_graphics("/post/2018-07-22-2nd-degree-burns_files/uni.jpeg")
 Now that the road map has been laid out, let's get to why you're here: fun visuals about underwhelming information!
 
 **Semester One**
-```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.align="center",out.width="100%"}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.align="center",out.width="100%",out.height="100%",out.extra = 'style="display:block; margin:auto;"'}
 plot <- dt %>%
   filter(semester == "One") %>%
   select(label,size)
